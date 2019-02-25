@@ -2,6 +2,6 @@
 /.idea
 
 # files
-/ganalytics-files/*.*
+/ganalytics-files/*.csv
 /reports/*.*
-/urls/*.*
+/urls/*.csv
