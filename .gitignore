@@ -1,0 +1,7 @@
+# IDEs and editors
+/.idea
+
+# files
+/ganalytics-files/*.*
+/reports/*.*
+/urls/*.*
