@@ -5,3 +5,8 @@
 /ganalytics-files/*.csv
 /reports/*.*
 /urls/*.csv
+/ga-accesses/*.*
+/ga-downloads/*.*
+/ganalytics-files-site-velho/*.*
+/urls-site-velho/*.*
+

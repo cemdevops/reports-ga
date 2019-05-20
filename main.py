@@ -31,7 +31,8 @@ def write_excel(df, path_name, encoding):
     # Write the result as excel file
     df.to_excel(path_name, encoding=encoding)
 
-def get_pagesviews(urls_csv_file_path, ga_csv_file_path, separator, header_index,
+def get_pagesviews(urls_csv_file_path, ga_csv_file_path, separator,
+                   header_index, col_names_for_contagem,
                    urls_util_col_indexes, ga_util_col_indexes,
                    fields_name_for_join, encoding,
                    report_file_excel_path, report_file_csv_path):
@@ -43,7 +44,8 @@ def get_pagesviews(urls_csv_file_path, ga_csv_file_path, separator, header_index
     #
     file_name = get_file_name(ga_csv_file_path)
     # Rename column 'pageviews'
-    df_tmp = df_tmp.rename(index=str, columns={"Page": fields_name_for_join[0], "Pageviews": file_name})
+    df_tmp = df_tmp.rename(index=str, columns={col_names_for_contagem["url_col_name"]: fields_name_for_join[0],
+                                               col_names_for_contagem["url_total_views"]: file_name})
     # Convert the pageviews column to a numeric type
     #df_tmp[file_name] = df_tmp[file_name].convert_objects(convert_numeric=True)
 
@@ -70,7 +72,7 @@ def get_file_name(url_path_name):
     """
     Get the file name without extension
     :param url_path_name: path where the csv file is located.
-    For example: ganalytics-files/20160716-20160816.csv
+    For example: ga-accesses/20160716-20160816.csv
     :return: csv file name without extension. For example: 20160716-20160816.csv
     """
 
@@ -87,8 +89,8 @@ def list_of_csv_files(csv_directory_path):
     csv_files_list = [f for f in listdir(csv_directory_path) if isfile(join(csv_directory_path, f))]
     return csv_files_list
 
-
-_url_selected_file_path = 'urls/urls_terraview_social_policy.csv'
+_type_contagem = 'accesses'
+_url_selected_file_path = 'urls/'+_type_contagem+'-news.csv'
 _final_report = 'reports/final_report.xlsx'
 _fields_name_for_join = ['URL']
 _separator = ','
@@ -96,9 +98,10 @@ _encoding = 'UTF-8'
 _header_index = 5  # the blank line is not considered a row
 _urls_util_col_indexes = [1]
 _ga_util_col_indexes = [0,1]
-_csv_directory_path = 'ganalytics-files'
+_csv_directory_path = 'ga-'+_type_contagem
 _reports_directory_path = 'reports'
-
+_col_names_for_contagem = {"ga-accesses": {"url_col_name": "Page", "url_total_views": "Pageviews"},
+                 "ga-downloads": {"url_col_name": "Event Label", "url_total_views": "Total Events"}}
 
 def create_final_report(csv_directory_path, reports_directory_path):
     csv_files_list = list_of_csv_files(csv_directory_path)
@@ -111,8 +114,9 @@ def create_final_report(csv_directory_path, reports_directory_path):
         csv_file_name_without_ext = csv_file_name_with_ext.split(".")[0]
         _report_file_excel_path = reports_directory_path+'/'+'report-'+csv_file_name_without_ext+'.xlsx'
         _report_file_csv_path = reports_directory_path + '/' + 'report-' + csv_file_name_without_ext + '.csv'
-        _df_result = get_pagesviews(_url_selected_file_path, _ga_csv_file_path, _separator, _header_index,
-                                   _urls_util_col_indexes, _ga_util_col_indexes,
+        _df_result = get_pagesviews(_url_selected_file_path, _ga_csv_file_path, _separator,
+                                    _header_index, _col_names_for_contagem[_csv_directory_path],
+                                    _urls_util_col_indexes, _ga_util_col_indexes,
                                     _fields_name_for_join, _encoding,
                                    _report_file_excel_path, _report_file_csv_path)
         _df_final_result_tmp = join_df(_df_final_result_tmp, _df_result, _fields_name_for_join)
